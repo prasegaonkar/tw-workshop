@@ -44,4 +44,19 @@ public class AccountTest {
 		account.deposit(-20);
 		assertThat(account.getOpeningBalance()).isEqualTo(100);
 	}
+
+	@Test
+	public void canWithdrawFromAccountIfSufficientBalance() {
+		account.withdraw(20);
+		assertThat(account.getCurrentBalance()).isEqualTo(80);
+		assertThat(account.getOpeningBalance()).isEqualTo(100);
+	}
+
+	@Test
+	public void cannotWithdrawFromAccountIfInsufficientBalance() {
+		exception.expect(InsufficientFunds.class);
+		account.withdraw(120);
+		assertThat(account.getCurrentBalance()).isEqualTo(100);
+		assertThat(account.getOpeningBalance()).isEqualTo(100);
+	}
 }

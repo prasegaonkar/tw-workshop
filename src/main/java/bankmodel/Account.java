@@ -36,6 +36,9 @@ public class Account {
 	public void withdraw(int amount) {
 		validateAmount(amount);
 		synchronized (lock) {
+			if (currentBalance < amount) {
+				throw new InsufficientFunds();
+			}
 			transactions.add(new Xn(XnType.WITHDRAW, amount));
 			currentBalance -= amount;
 		}
@@ -45,7 +48,7 @@ public class Account {
 	private void validateReconciliation() {
 		boolean isReconciled = reconciler.validate(transactions, currentBalance);
 		if (!isReconciled) {
-			throw new AccountNotBeongReconciled();
+			throw new AccountNotBeingReconciled();
 		}
 	}
 
@@ -57,7 +60,13 @@ public class Account {
 
 }
 
-class AccountNotBeongReconciled extends RuntimeException {
+class InsufficientFunds extends RuntimeException {
+
+	private static final long serialVersionUID = 1L;
+
+}
+
+class AccountNotBeingReconciled extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
