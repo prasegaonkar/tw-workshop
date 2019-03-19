@@ -1,4 +1,4 @@
-package bankmodel;
+package bankmodel.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import bankmodel.core.Account;
 
 public class AccountTest {
 
@@ -33,7 +35,7 @@ public class AccountTest {
 
 	@Test
 	public void canNotDepositInvalidAmountIntoAccount() {
-		exception.expect(InvalidAmount.class);
+		exception.expect(InvalidAmountException.class);
 		account.deposit(-20);
 		assertThat(account.getBalance()).isEqualTo(0);
 	}
@@ -47,40 +49,8 @@ public class AccountTest {
 
 	@Test
 	public void cannotWithdrawFromAccountIfInsufficientBalance() {
-		exception.expect(InsufficientFunds.class);
+		exception.expect(InsufficientFundsException.class);
 		account.withdraw(120);
 		assertThat(account.getBalance()).isEqualTo(0);
-	}
-
-	@Test
-	public void testConcurrency() throws Exception {
-		final int largeSumToEnsureNoUnderflow = 20000;
-		account.deposit(largeSumToEnsureNoUnderflow);
-		final Runnable deposit = () -> {
-			for (int k = 0; k < 5; k++) {
-				account.deposit(200);
-			}
-		};
-		final Runnable withdraw = () -> {
-			for (int k = 0; k < 5; k++) {
-				account.withdraw(200);
-			}
-		};
-		Thread[] depositors = new Thread[5];
-		Thread[] withdrawers = new Thread[5];
-		for (int i = 0; i < 5; i++) {
-			depositors[i] = new Thread(deposit);
-			withdrawers[i] = new Thread(withdraw);
-		}
-		for (int i = 0; i < 5; i++) {
-			depositors[i].start();
-			withdrawers[i].start();
-		}
-		for (int i = 0; i < 5; i++) {
-			depositors[i].join();
-			withdrawers[i].join();
-		}
-		assertThat(account.getBalance()).isEqualTo(largeSumToEnsureNoUnderflow);
-
 	}
 }

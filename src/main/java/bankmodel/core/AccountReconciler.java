@@ -1,10 +1,10 @@
-package bankmodel;
+package bankmodel.core;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class AccountReconciler {
-	public void validate(List<Xn> transactions, int expectedBalance) {
+	void validate(List<Xn> transactions, int expectedBalance) {
 		AtomicInteger calculatedBalance = new AtomicInteger(0);
 		if (transactions != null) {
 			transactions.forEach(xn -> {
@@ -16,13 +16,7 @@ class AccountReconciler {
 			});
 		}
 		if (calculatedBalance.get() != expectedBalance) {
-			throw new AccountNotBeingReconciled();
+			throw new ReconciliationException();
 		}
 	}
-}
-
-class AccountNotBeingReconciled extends RuntimeException {
-
-	private static final long serialVersionUID = 1L;
-
 }

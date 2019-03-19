@@ -1,4 +1,4 @@
-package bankmodel;
+package bankmodel.core;
 
 import static org.assertj.core.api.Assertions.fail;
 
@@ -9,6 +9,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+
+import bankmodel.core.AccountReconciler;
+import bankmodel.core.Xn;
+import bankmodel.core.XnType;
 
 public class AccountReconcilerTest {
 	private AccountReconciler reconciler = null;
@@ -25,7 +29,7 @@ public class AccountReconcilerTest {
 	public void checkWithNoTransactions() {
 		try {
 			reconciler.validate(null, 0);
-		} catch (AccountNotBeingReconciled ex) {
+		} catch (ReconciliationException ex) {
 			fail(ex.getMessage());
 		}
 	}
@@ -37,7 +41,7 @@ public class AccountReconcilerTest {
 		transactions.add(new Xn(XnType.WITHDRAW, 20));
 		try {
 			reconciler.validate(transactions, 0);
-		} catch (AccountNotBeingReconciled ex) {
+		} catch (ReconciliationException ex) {
 			fail(ex.getMessage());
 		}
 	}
@@ -47,7 +51,7 @@ public class AccountReconcilerTest {
 		List<Xn> transactions = new ArrayList<>();
 		transactions.add(new Xn(XnType.DEPOSIT, 20));
 		transactions.add(new Xn(XnType.WITHDRAW, 20));
-		exception.expect(AccountNotBeingReconciled.class);
+		exception.expect(ReconciliationException.class);
 		reconciler.validate(transactions, 20);
 	}
 }
