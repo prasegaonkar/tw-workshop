@@ -20,8 +20,8 @@ public class Account {
 		synchronized (lock) {
 			transactions.add(new Xn(DEPOSIT, amount));
 			balance += amount;
+			validateReconciliation();
 		}
-		validateReconciliation();
 	}
 
 	public void withdraw(int amount) {
@@ -32,8 +32,8 @@ public class Account {
 			}
 			transactions.add(new Xn(XnType.WITHDRAW, amount));
 			balance -= amount;
+			validateReconciliation();
 		}
-		validateReconciliation();
 	}
 
 	private void validateReconciliation() {

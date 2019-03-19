@@ -3,7 +3,6 @@ package bankmodel;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -54,8 +53,9 @@ public class AccountTest {
 	}
 
 	@Test
-	@Ignore
 	public void testConcurrency() throws Exception {
+		final int largeSumToEnsureNoUnderflow = 20000;
+		account.deposit(largeSumToEnsureNoUnderflow);
 		final Runnable deposit = () -> {
 			for (int k = 0; k < 5; k++) {
 				account.deposit(200);
@@ -63,7 +63,7 @@ public class AccountTest {
 		};
 		final Runnable withdraw = () -> {
 			for (int k = 0; k < 5; k++) {
-				account.withdraw(100);
+				account.withdraw(200);
 			}
 		};
 		Thread[] depositors = new Thread[5];
@@ -80,7 +80,7 @@ public class AccountTest {
 			depositors[i].join();
 			withdrawers[i].join();
 		}
-		assertThat(account.getBalance()).isEqualTo(2500);
+		assertThat(account.getBalance()).isEqualTo(largeSumToEnsureNoUnderflow);
 
 	}
 }
