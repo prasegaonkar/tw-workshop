@@ -10,25 +10,16 @@ import lombok.Value;
 
 @Getter
 public class Account {
-	private int openingBalance;
-	private int currentBalance;
+	private int balance;
 	private List<Xn> transactions = new ArrayList<>();
 	private Object lock = new Object();
-	private AccountReconciler reconciler;
-
-	public Account(int openingBalance) {
-		validateAmount(openingBalance);
-		this.openingBalance = openingBalance;
-		this.currentBalance = openingBalance;
-		transactions.add(new Xn(DEPOSIT, openingBalance));
-		reconciler = new AccountReconciler();
-	}
+	private AccountReconciler reconciler = new AccountReconciler();
 
 	public void deposit(int amount) {
 		validateAmount(amount);
 		synchronized (lock) {
 			transactions.add(new Xn(DEPOSIT, amount));
-			currentBalance += amount;
+			balance += amount;
 		}
 		validateReconciliation();
 	}
@@ -36,17 +27,17 @@ public class Account {
 	public void withdraw(int amount) {
 		validateAmount(amount);
 		synchronized (lock) {
-			if (currentBalance < amount) {
+			if (balance < amount) {
 				throw new InsufficientFunds();
 			}
 			transactions.add(new Xn(XnType.WITHDRAW, amount));
-			currentBalance -= amount;
+			balance -= amount;
 		}
 		validateReconciliation();
 	}
 
 	private void validateReconciliation() {
-		boolean isReconciled = reconciler.validate(transactions, currentBalance);
+		boolean isReconciled = reconciler.validate(transactions, balance);
 		if (!isReconciled) {
 			throw new AccountNotBeingReconciled();
 		}
