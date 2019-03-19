@@ -20,7 +20,7 @@ public class Account {
 		synchronized (lock) {
 			transactions.add(new Xn(DEPOSIT, amount));
 			balance += amount;
-			validateReconciliation();
+			reconciler.validate(transactions, balance);
 		}
 	}
 
@@ -32,19 +32,12 @@ public class Account {
 			}
 			transactions.add(new Xn(XnType.WITHDRAW, amount));
 			balance -= amount;
-			validateReconciliation();
+			reconciler.validate(transactions, balance);
 		}
 	}
 
-	private void validateReconciliation() {
-		boolean isReconciled = reconciler.validate(transactions, balance);
-		if (!isReconciled) {
-			throw new AccountNotBeingReconciled();
-		}
-	}
-
-	private void validateAmount(int openingBalance) {
-		if (openingBalance <= 0) {
+	private void validateAmount(int amount) {
+		if (amount <= 0) {
 			throw new InvalidAmount();
 		}
 	}
@@ -52,12 +45,6 @@ public class Account {
 }
 
 class InsufficientFunds extends RuntimeException {
-
-	private static final long serialVersionUID = 1L;
-
-}
-
-class AccountNotBeingReconciled extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
