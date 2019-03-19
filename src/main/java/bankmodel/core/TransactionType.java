@@ -1,5 +1,5 @@
 package bankmodel.core;
 
-public enum XnType {
+public enum TransactionType {
 	DEPOSIT, WITHDRAW;
 }

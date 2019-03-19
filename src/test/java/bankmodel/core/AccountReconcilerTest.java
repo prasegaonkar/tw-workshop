@@ -11,8 +11,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import bankmodel.core.AccountReconciler;
-import bankmodel.core.Xn;
-import bankmodel.core.XnType;
+import bankmodel.core.Transaction;
+import bankmodel.core.TransactionType;
 
 public class AccountReconcilerTest {
 	private AccountReconciler reconciler = null;
@@ -36,9 +36,9 @@ public class AccountReconcilerTest {
 
 	@Test
 	public void checkWithTransactions() {
-		List<Xn> transactions = new ArrayList<>();
-		transactions.add(new Xn(XnType.DEPOSIT, 20));
-		transactions.add(new Xn(XnType.WITHDRAW, 20));
+		List<Transaction> transactions = new ArrayList<>();
+		transactions.add(new Transaction(TransactionType.DEPOSIT, 20));
+		transactions.add(new Transaction(TransactionType.WITHDRAW, 20));
 		try {
 			reconciler.validate(transactions, 0);
 		} catch (ReconciliationException ex) {
@@ -48,9 +48,9 @@ public class AccountReconcilerTest {
 
 	@Test
 	public void checkWithTransactionsMismatch() {
-		List<Xn> transactions = new ArrayList<>();
-		transactions.add(new Xn(XnType.DEPOSIT, 20));
-		transactions.add(new Xn(XnType.WITHDRAW, 20));
+		List<Transaction> transactions = new ArrayList<>();
+		transactions.add(new Transaction(TransactionType.DEPOSIT, 20));
+		transactions.add(new Transaction(TransactionType.WITHDRAW, 20));
 		exception.expect(ReconciliationException.class);
 		reconciler.validate(transactions, 20);
 	}

@@ -3,12 +3,12 @@ package bankmodel;
 import java.util.List;
 
 import bankmodel.core.Account;
-import bankmodel.core.Xn;
+import bankmodel.core.Transaction;
 
-public class AccountService {
+public class SynchronizedAccount {
 	private final Account account;
 
-	public AccountService(Account account) {
+	public SynchronizedAccount(Account account) {
 		this.account = account;
 	}
 
@@ -28,7 +28,7 @@ public class AccountService {
 		return account.getBalance();
 	}
 
-	public List<Xn> getTransactions() {
+	public List<Transaction> getTransactions() {
 		return account.getTransactions();
 	}
 
