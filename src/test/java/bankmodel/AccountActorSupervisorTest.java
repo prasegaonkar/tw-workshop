@@ -1,38 +1,43 @@
-/*package bankmodel;
+package bankmodel;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import akka.testkit.TestKit;
+import akka.testkit.javadsl.TestKit;
+import bankmodel.AccountActor.AccountBalance;
+import bankmodel.AccountActor.AccountTransactions;
 import bankmodel.AccountActor.Deposit;
+import bankmodel.AccountActor.GetBalance;
+import bankmodel.AccountActor.GetTransactions;
 import bankmodel.AccountActor.Withdraw;
 import bankmodel.core.Account;
 
 public class AccountActorSupervisorTest {
-	private TestKit probe;
-	private ActorRef supervisor;
-	private static final int largeSumToEnsureNoUnderflow = 20000;
+	static ActorSystem system;
 
-	@Before
-	public void setup() {
-		Account account = new Account();
-		account.deposit(largeSumToEnsureNoUnderflow);
-		TestKit probe = new TestKit(system);		
-		supervisor = system.actorOf(AccountActorSupervisor.props(account), "supervisor");
+	@BeforeClass
+	public static void setupClass() {
+		system = ActorSystem.create();
 	}
 
-	@After
-	public void teardown() {
-		system.terminate();
+	@AfterClass
+	public static void teardownClass() {
+		TestKit.shutdownActorSystem(system);
+		system = null;
 	}
 
 	@Test
 	public void testConcurrency() throws Exception {
+		Account account = new Account();
+		account.deposit(200000);
+		TestKit probe = new TestKit(system);
+		ActorRef supervisor = system.actorOf(AccountActorSupervisor.props(account), "supervisor");
+
 		Thread[] depositors = new Thread[5];
 		Thread[] withdrawers = new Thread[5];
 		Thread[] invalidators = new Thread[5];
@@ -64,8 +69,12 @@ public class AccountActorSupervisorTest {
 			withdrawers[i].join();
 			invalidators[i].join();
 		}
-		assertThat(syncAccount.getBalance()).isEqualTo(largeSumToEnsureNoUnderflow);
+		supervisor.tell(new GetBalance(), probe.getRef());
+		AccountBalance balance = probe.expectMsgClass(AccountBalance.class);
+		assertThat(balance.getAmount()).isEqualTo(200000);
+		supervisor.tell(new GetTransactions(), probe.getRef());
+		AccountTransactions transactions = probe.expectMsgClass(AccountTransactions.class);
+		assertThat(transactions.getTransactions().size()).isEqualTo(101);
 
 	}
 }
-*/
