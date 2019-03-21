@@ -74,7 +74,7 @@ public class AccountActorSupervisorTest {
 		assertThat(balance.getAmount()).isEqualTo(200000);
 		supervisor.tell(new GetTransactions(), probe.getRef());
 		AccountTransactions transactions = probe.expectMsgClass(AccountTransactions.class);
-		assertThat(transactions.getTransactions().size()).isEqualTo(101);
+		assertThat(transactions.getTransactions().size()).isEqualTo(51);
 
 	}
 }
