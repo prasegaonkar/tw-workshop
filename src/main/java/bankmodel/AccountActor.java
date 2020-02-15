@@ -6,7 +6,6 @@ import akka.actor.AbstractLoggingActor;
 import akka.actor.Props;
 import bankmodel.core.Account;
 import bankmodel.core.Transaction;
-import lombok.Value;
 
 public class AccountActor extends AbstractLoggingActor {
 	private final Account account;
@@ -25,24 +24,56 @@ public class AccountActor extends AbstractLoggingActor {
 	public static class GetTransactions {
 	}
 
-	@Value
 	public static class AccountBalance {
 		private final int amount;
+
+		public AccountBalance(int amount) {
+			this.amount = amount;
+		}
+
+		public int getAmount() {
+			return amount;
+		}
+
 	}
 
-	@Value
 	public static class AccountTransactions {
 		private final List<Transaction> transactions;
+
+		public AccountTransactions(List<Transaction> transactions) {
+			this.transactions = transactions;
+		}
+
+		public List<Transaction> getTransactions() {
+			return transactions;
+		}
+
 	}
 
-	@Value
 	public static class Deposit {
 		private final int amount;
+
+		public Deposit(int amount) {
+			this.amount = amount;
+		}
+
+		public int getAmount() {
+			return amount;
+		}
+
 	}
 
-	@Value
 	public static class Withdraw {
 		private final int amount;
+
+		public Withdraw(int amount) {
+			this.amount = amount;
+		}
+
+		public int getAmount() {
+			return amount;
+		}
+
 	}
 
 	private void getBalance(GetBalance r) {

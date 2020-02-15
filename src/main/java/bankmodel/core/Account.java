@@ -6,12 +6,8 @@ import static bankmodel.core.TransactionType.WITHDRAW;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-
 public class Account {
-	@Getter
 	private int balance;
-	@Getter
 	private List<Transaction> transactions = new ArrayList<>();
 	private AccountReconciler reconciler = new AccountReconciler();
 
@@ -36,5 +32,13 @@ public class Account {
 		if (amount <= 0) {
 			throw new InvalidAmountException();
 		}
+	}
+
+	public int getBalance() {
+		return balance;
+	}
+
+	public List<Transaction> getTransactions() {
+		return transactions;
 	}
 }
